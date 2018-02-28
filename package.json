@@ -1,8 +1,9 @@
 {
   "name": "geocontext",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Cross platform geographical context API",
   "main": "build/src/node.js",
+  "types": "build/src/geocontext.d.ts",
   "browser": {
     "./build/src/node.js": "build/src/browser.js"
   },
