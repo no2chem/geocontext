@@ -10,7 +10,7 @@
     "test": "mocha -r ts-node/register src/**/*.spec.ts --timeout 20000",
     "check": "gts check",
     "clean": "gts clean",
-    "prepublish": "rollup -c > build/src/node.js && BROWSER=true rollup -c > build/src/browser.js",
+    "prepublish": "tsc -p .;rollup -c > build/src/node.js && BROWSER=true rollup -c > build/src/browser.js",
     "compile": "tsc -p .",
     "fix": "gts fix",
     "prepare": "npm run compile",
