@@ -197,9 +197,8 @@ export default function getGeoContext(options?: GeocontextOptions): Geocontext {
         10000;
     // If macos Core Location is available, use it.
     try {
-      throw "oops";
-      //const macosLocation = require('macos-location');
-      //return new macosGeocontext(macosLocation, ipAccuracy);
+      const macosLocation = require('macos-location');
+      return new macosGeocontext(macosLocation, ipAccuracy);
     } catch {
       // If Core Location is not avaiable, fall back to ip location
       return new IpGeocontext(ipAccuracy);
