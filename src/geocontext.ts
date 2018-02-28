@@ -107,8 +107,8 @@ class IpGeocontext implements Geocontext {
     const loc = await this.getIpLocation();
     return {
       coords: {
-        latitude: loc.lat,
-        longitude: loc.lon,
+        latitude: loc.latitude,
+        longitude: loc.longitude,
         accuracy: this.ipAccuracy,
         speed: null,
         heading: null,
@@ -168,8 +168,8 @@ const toPromiseApi =
     };
 
 interface IpLocationInfo {
-  lat: number;
-  lon: number;
+  latitude: number;
+  longitude: number;
 }
 
 /**
@@ -197,8 +197,9 @@ export default function getGeoContext(options?: GeocontextOptions): Geocontext {
         10000;
     // If macos Core Location is available, use it.
     try {
-      const macosLocation = require('macos-location');
-      return new macosGeocontext(macosLocation, ipAccuracy);
+      throw "oops";
+      //const macosLocation = require('macos-location');
+      //return new macosGeocontext(macosLocation, ipAccuracy);
     } catch {
       // If Core Location is not avaiable, fall back to ip location
       return new IpGeocontext(ipAccuracy);
