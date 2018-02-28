@@ -70,6 +70,91 @@ class MockGeocontext implements Geocontext {
   }
 }
 
+class IpGeocontext implements Geocontext {
+
+  constructor(public ipAccuracy: number) {}
+
+  getCurrentPosition(
+    successCallback: (position: Position) => void,
+    errorCallback?: (error: PositionError) => void,
+    options?: PositionOptions) {
+    this.getIpLocation()
+      .then(res => successCallback({
+        coords: {
+          latitude: res.lat,
+          longitude: res.lon,
+          accuracy: this.ipAccuracy,
+          speed: null,
+          heading: null,
+          altitude: null,
+          altitudeAccuracy: null
+        },
+        timestamp: Date.now()
+      }))
+      .catch(err => {
+        const error = {
+          code: 1,
+          message: `Couldn\'t get IP-based position: ${err}`,
+        };
+        if (errorCallback !== undefined) {
+          errorCallback(error as PositionError);
+        }
+      });
+  }
+
+  async getCurrentPositionPromise(options?: PositionOptions):
+  Promise<Position> {
+    const loc = await this.getIpLocation();
+    return {
+      coords: {
+        latitude: loc.lat,
+        longitude: loc.lon,
+        accuracy: this.ipAccuracy,
+        speed: null,
+        heading: null,
+        altitude: null,
+        altitudeAccuracy: null
+      },
+      timestamp: Date.now()
+    };
+  }
+
+  getIpLocation(location?: string) : Promise<IpLocationInfo> {
+      return require('iplocation')(location);
+  }
+
+}
+
+interface MacOsLocationRequest {
+  getCurrentPosition : W3CCurrentPositionRequest;
+}
+
+class macosGeocontext extends IpGeocontext {
+
+  constructor(public macoslocation : MacOsLocationRequest, ipAccuracy: number) { super(ipAccuracy); }
+
+  getCurrentPosition(
+    successCallback: (position: Position) => void,
+    errorCallback?: (error: PositionError) => void,
+    options?: PositionOptions) {
+    this.macoslocation.getCurrentPosition(
+      location => successCallback(location),
+      error => super.getCurrentPosition(successCallback, errorCallback, options),
+      options
+    );
+  }
+
+  async getCurrentPositionPromise(options?: PositionOptions): Promise<Position> {
+    try {
+      let location = await toPromiseApi(this.macoslocation.getCurrentPosition)(options);
+      return location;
+    } catch {
+      return super.getCurrentPositionPromise();
+    }
+  }
+
+}
+
 const toPromiseApi =
     (posRequest: W3CCurrentPositionRequest): PositionPromiseRequest => {
       return (options?: PositionOptions) => {
@@ -106,63 +191,17 @@ export default function getGeoContext(options?: GeocontextOptions): Geocontext {
     }
     throw new Error('Geolocation not supported by browser!');
   } else {
+    const ipAccuracy =
+      options !== undefined && options.ipAccuracy !== undefined ?
+        options.ipAccuracy :
+        10000;
     // If macos Core Location is available, use it.
     try {
       const macosLocation = require('macos-location');
-      return {
-        getCurrentPosition: macosLocation.getCurrentPosition,
-        getCurrentPositionPromise:
-            toPromiseApi(macosLocation.getCurrentPosition)
-      };
+      return new macosGeocontext(macosLocation, ipAccuracy);
     } catch {
       // If Core Location is not avaiable, fall back to ip location
-      const ipLocation: (location?: string) => Promise<IpLocationInfo> =
-          require('iplocation');
-      const ipAccuracy =
-          options !== undefined && options.ipAccuracy !== undefined ?
-          options.ipAccuracy :
-          10000;
-      return {
-        getCurrentPosition: (success, fail, options) => {
-          ipLocation()
-              .then(res => success({
-                      coords: {
-                        latitude: res.lat,
-                        longitude: res.lon,
-                        accuracy: ipAccuracy,
-                        speed: null,
-                        heading: null,
-                        altitude: null,
-                        altitudeAccuracy: null
-                      },
-                      timestamp: Date.now()
-                    }))
-              .catch(err => {
-                const error = {
-                  code: PositionError.POSITION_UNAVAILABLE,
-                  message: 'Couldn\'t get IP-based position!',
-                };
-                if (fail !== undefined) {
-                  fail(error as PositionError);
-                }
-              });
-        },
-        getCurrentPositionPromise: async (options) => {
-          const loc = await ipLocation();
-          return {
-            coords: {
-              latitude: loc.lat,
-              longitude: loc.lon,
-              accuracy: ipAccuracy,
-              speed: null,
-              heading: null,
-              altitude: null,
-              altitudeAccuracy: null
-            },
-            timestamp: Date.now()
-          };
-        }
-      };
+      return new IpGeocontext(ipAccuracy);
     }
   }
 }
