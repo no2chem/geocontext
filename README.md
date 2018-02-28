@@ -15,7 +15,7 @@ A quick example which prints the current geographical context:
 import geolocation from "geolocation";
 
 async function printContext() : void {
-  let location = await geocontext().getCurrentPositionPromise();
+  let location = await geolocation().getCurrentPositionPromise();
   console.log(JSON.stringify(location, null , 2));
 };
 
