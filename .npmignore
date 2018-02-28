@@ -8,3 +8,4 @@ src
 node_modules
 .idea
 *.tgz
+rollup.config.js

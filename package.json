@@ -2,9 +2,9 @@
   "name": "geocontext",
   "version": "0.1.0",
   "description": "Cross platform geographical context API",
-  "main": "./build/src/node.js",
+  "main": "build/src/node.js",
   "browser": {
-    "./build/src/node.js": "./build/src/browser.js"
+    "./build/src/node.js": "build/src/browser.js"
   },
   "scripts": {
     "test": "mocha -r ts-node/register src/**/*.spec.ts --timeout 20000",
