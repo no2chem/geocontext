@@ -1,5 +1,3 @@
-import * as macoslocation from 'macos-location';
-
 declare var process: {browser: boolean;};
 
 // We want a single default export.
@@ -110,7 +108,7 @@ export default function getGeoContext(options?: GeocontextOptions): Geocontext {
   } else {
     // If macos Core Location is available, use it.
     try {
-      const macosLocation: typeof macoslocation = require('macos-location');
+      const macosLocation = require('macos-location');
       return {
         getCurrentPosition: macosLocation.getCurrentPosition,
         getCurrentPositionPromise:
