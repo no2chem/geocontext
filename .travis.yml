@@ -1,43 +1,47 @@
 language: node_js
 os:
-  - linux
-  - osx
+- linux
+- osx
 node_js:
-  - "node"
-  - "lts/*"
+- node
+- lts/*
 before_script:
-  - yarn global add typescript gts typedoc
+- yarn global add typescript gts typedoc
 cache: yarn
 before_deploy:
-  - yarn typedoc
-  - yarn prepublish
-  - yarn pack
+- yarn typedoc
+- yarn prepublish
+- yarn pack
 deploy:
-  - provider: pages
-    skip-cleanup: true
-    github-token: $GITHUB_TOKEN
-    keep-history: true
-    local_dir: docs
-    committer-from-gh: true
-    on:
-      branch: master
-      node: "node"
-      condition: "$TRAVIS_OS_NAME = linux"
-  - provider: releases
-    api_key: $GITHUB_TOKEN
-    file_glob: true
-    file: "soss-*.tgz"
-    skip_cleanup: true
-    on:
-      branch: master
-      node: "node"
-      tags: true
-      condition: "$TRAVIS_OS_NAME = linux"
-  - provider: npm
-    api_key: $NPM_TOKEN
-    skip_cleanup: true
-    email: "mwei@cs.ucsd.edu"
-    on:
-      tags: true
-      node: "node"
-      condition: "$TRAVIS_OS_NAME = linux"
+- provider: pages
+  skip-cleanup: true
+  github-token: "$GITHUB_TOKEN"
+  keep-history: true
+  local_dir: docs
+  committer-from-gh: true
+  on:
+    branch: master
+    node: node
+    condition: "$TRAVIS_OS_NAME = linux"
+- provider: releases
+  api_key: "$GITHUB_TOKEN"
+  file_glob: true
+  file: soss-*.tgz
+  skip_cleanup: true
+  on:
+    branch: master
+    node: node
+    tags: true
+    condition: "$TRAVIS_OS_NAME = linux"
+- provider: npm
+  api_key: "$NPM_TOKEN"
+  skip_cleanup: true
+  email: mwei@cs.ucsd.edu
+  on:
+    tags: true
+    node: node
+    condition: "$TRAVIS_OS_NAME = linux"
+env:
+  matrix:
+  - secure: OHS5x0nFB9C4GQjOX4bTkxyvF8VZtbfPAFd+8aQRolP5krXVO8nK2rCg/CAIUfcwFR+GrbnLZGh5HodvEB2bNbWpQ5wvZm6nwtdx3UUMUS8wOJHlS82OuP0pGZ4tu8eo96zRUCPvDB4GI7z1Y4/omHhhe8xKAhVm65GqJb6TuEEBFefY97gzghfNgWRalRTutbBrV2EQRRgYg1jxdR7f5qq99NdRESz+cw43oSL8ethuWpvyhhURZyZvtzvf6rJqs+XypiL0XGF7KrMs4PH/eQ3x+ihUlrqBOe6CLFGax3ztD/eJ2fQHBO5MSoLYfQ+ZjobmWLH5UkYFiyxcmkH2OTkaBVRuyzvZVW096yu73I50VzDdmhQgxoU4NKlfXKS/Lqr5Pf4m8AJQ+qwTR32vjhoHdRoDiz8yAX32WYwqcvdzTU516dIGSq00yhaZqw7VTk0ujoU4bUIYOZFKtko2gBXuxOWF0QTn+nKBezJ0Yo0lQfzfv9yHjmkvnLrFZWmfSaT5eQNoc8sNkUPd7+aAzTOOIWQ/3b7aj7bYDCvddqXUFI5PfcsDnm+TL5P/iV1aMJTuMadQxDlru21gpfryK2SzcaIIxMwwwS7KlIT6ybdXvHPffGWo8fWJ8ogbUEJNzeBwYbcB39hMmbMLhcv4XxC+2Hpxl8bcQCuHftxN7I4=
+  - secure: O482GpMiVlGxvm9AdZAO+Rw0xk3baQk4BISfonzjW1quiYtwOmMZrIuTeW3PIgdVUKkTnuuuookbFKUnhFJt5QSonZ9OB7bmXzu05MHqBTP7M1MbMra5p+ABC1NqvQ1wKgoYJ4pTA9EuHjtbFup7BVQl63pnbt3f3n4qkYYtBGrF/OGvU/B0Rde/2zuTHHU3+e/WVoiP1hI730rZkxc5ma4gcv4kiOe+s9OybAR2Q80K+8+7bh2ZD7hRsNmgVmBTLsxNbWvJYbnC9naCbad0KXtnrIKsemnTE7sETTCDJ3+sBJJDMjuJc6PV8Wz+W1wp4k5SQY2r2sbTjl/ryzu971VjWKZ8bFpdBkuevGXMh8T4fXo+JJuWDReS0CjcyZDZnusJzNi6xJg3Cb7Nyuu64L200S1emyDZGY9+WRcg7mvKy/MoW6XCzgfcjBYbnO131AYyTUMZs69IvfecV6BGVO18lcRok6PbfrNKAAFLTF1D+hYBmfFcAk+lRiUkEuP6hkn7vvWM1/ECtiLK5yYofslNa7dY7B0HNNsmW97AD+SAbq6E1gI5sppQ8e+XuIgOl4Il5mhjzhRJpPL3DK4affvag5f4oFl3/RXiXDo+WnLiEmMR3IzmhjERFn3Sl5EWqBrgwKYMBcgMTSY1Yjb2qEN5Q6qlsPUWAnnsQ13n9BI=
