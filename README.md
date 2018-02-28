@@ -1,6 +1,6 @@
 # Geocontext - A cross-platform geographical context API
 
-[![Build Status](https://travis-ci.org/no2chem/geocontext.svg?branch=master)](https://travis-ci.org/no2chem/soss-js)
+[![Build Status](https://travis-ci.org/no2chem/geocontext.svg?branch=master)](https://travis-ci.org/no2chem/geocontext)
 
 Geocontext provides an API to query the geographical context (geocontext) of a user in a simple, cross-platform way. It is designed to work both in the browser as well in node.
 
