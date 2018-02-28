@@ -81,8 +81,8 @@ class IpGeocontext implements Geocontext {
     this.getIpLocation()
       .then(res => successCallback({
         coords: {
-          latitude: res.lat,
-          longitude: res.lon,
+          latitude: res.latitude,
+          longitude: res.longitude,
           accuracy: this.ipAccuracy,
           speed: null,
           heading: null,
